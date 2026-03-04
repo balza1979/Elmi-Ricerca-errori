@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Libreria per leggere file Excel -->
-https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
   body {
@@ -27,6 +27,7 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
 
   .container {
     max-width: 600px;
+    max-width: 1000px;
     margin: 40px auto;
     background: white;
     padding: 30px;
@@ -40,7 +41,6 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
     margin-top: 20px;
   }
 
-  /* 🔥 UNICA MODIFICA: input più alti con scrollbar */
   select, input {
     width: 100%;
     padding: 10px;
@@ -48,10 +48,6 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
     border-radius: 6px;
     border: 1px solid #9ca3af;
     font-size: 16px;
-
-    height: 250px;        /* <-- Aumenta altezza campo */
-    overflow-y: auto;     /* <-- Scroll verticale */
-    white-space: normal;  /* <-- Vai a capo automatico */
   }
 </style>
 </head>
