@@ -2,19 +2,22 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>ELMI – PDF</title>
+<title>ELMI – Errori</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Libreria per leggere file Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
   body {
     margin: 0;
     padding: 0;
-    background: #d1d5db;
+    background: #d1d5db; /* grigio */
     font-family: Arial, sans-serif;
   }
 
   header {
-    background: #b91c1c;
+    background: #b91c1c; /* rosso */
     color: white;
     padding: 20px;
     font-size: 28px;
@@ -31,57 +34,89 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   }
 
-  button {
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 20px;
+  }
+
+  select {
     width: 100%;
-    padding: 12px;
-    margin-top: 12px;
-    font-size: 18px;
-    background: #b91c1c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #9ca3af;
+    font-size: 16px;
+  }
+
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #9ca3af;
+    font-size: 16px;
+    resize: vertical; /* permette di allargare se serve */
+    min-height: 90px; /* altezza minima */
   }
 </style>
 </head>
 
 <body>
 
-<header>ELMI – PDF</header>
+<header>ELMI</header>
 
-<div class="container" id="listaPDF">
-  <p>Caricamento PDF...</p>
+<div class="container">
+  <label id="labelA">Caricamento...</label>
+  <select id="menu"></select>
+
+  <label id="labelB"></label>
+  <textarea id="campoB" readonly></textarea>
+
+  <label id="labelC"></label>
+  <textarea id="campoC" readonly></textarea>
+
+  <label id="labelD"></label>
+  <textarea id="campoD" readonly></textarea>
 </div>
 
 <script>
-async function cercaPDF() {
-  const container = document.getElementById("listaPDF");
-  container.innerHTML = "";
+async function caricaExcel() {
+  const file = await fetch("errori.xlsx");
+  const arrayBuffer = await file.arrayBuffer();
+  const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-  for (let i = 1; i <= 30; i++) {
-    const nome = `pdf${i}.pdf`;
-    const url = `${nome}`;
+  const sheet = workbook.Sheets["errori"];
+  const dati = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-    try {
-      const risposta = await fetch(url, { method: "HEAD" });
+  const intestazioni = dati[0];
+  const righe = dati.slice(1);
 
-      if (risposta.ok) {
-        const btn = document.createElement("button");
-        btn.textContent = nome;
-        btn.onclick = () => window.open(url, "_blank");
-        container.appendChild(btn);
-      }
-    } catch (e) {
-      // ignora errori
-    }
-  }
+  document.getElementById("labelA").textContent = intestazioni[0];
+  document.getElementById("labelB").textContent = intestazioni[1];
+  document.getElementById("labelC").textContent = intestazioni[2];
+  document.getElementById("labelD").textContent = intestazioni[3];
 
-  if (container.innerHTML.trim() === "") {
-    container.innerHTML = "<p>Nessun PDF trovato.</p>";
-  }
+  const menu = document.getElementById("menu");
+
+  righe.forEach((riga, index) => {
+    const opt = document.createElement("option");
+    opt.value = index;
+    opt.textContent = riga[0];
+    menu.appendChild(opt);
+  });
+
+  menu.addEventListener("change", () => {
+    const r = righe[menu.value];
+    document.getElementById("campoB").value = r[1] || "";
+    document.getElementById("campoC").value = r[2] || "";
+    document.getElementById("campoD").value = r[3] || "";
+  });
+
+  menu.dispatchEvent(new Event("change"));
 }
 
-cercaPDF();
+caricaExcel();
 </script>
 
 </body>
