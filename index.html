@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Libreria per leggere file Excel -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
 
 <style>
   body {
@@ -40,13 +40,28 @@
     margin-top: 20px;
   }
 
-  select, input {
+  select {
     width: 100%;
     padding: 10px;
     margin-top: 6px;
     border-radius: 6px;
     border: 1px solid #9ca3af;
     font-size: 16px;
+  }
+
+  /* CAMPI GRANDI CON SCROLL */
+  textarea {
+    width: 100%;
+    height: 180px;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #9ca3af;
+    font-size: 16px;
+    resize: vertical;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    background: #f9fafb;
   }
 </style>
 </head>
@@ -60,13 +75,13 @@
   <select id="menu"></select>
 
   <label id="labelB"></label>
-  <input type="text" id="campoB" readonly>
+  <textarea id="campoB" readonly></textarea>
 
   <label id="labelC"></label>
-  <input type="text" id="campoC" readonly>
+  <textarea id="campoC" readonly></textarea>
 
   <label id="labelD"></label>
-  <input type="text" id="campoD" readonly>
+  <textarea id="campoD" readonly></textarea>
 </div>
 
 <script>
