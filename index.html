@@ -5,19 +5,19 @@
 <title>ELMI – Errori</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Libreria per leggere file Excel -->
-https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
+<!-- Libreria Excel: CDN AFFIDABILE -->
+https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js
 
 <style>
   body {
     margin: 0;
     padding: 0;
-    background: #d1d5db; /* grigio */
+    background: #d1d5db;
     font-family: Arial, sans-serif;
   }
 
   header {
-    background: #b91c1c; /* rosso */
+    background: #b91c1c;
     color: white;
     padding: 20px;
     font-size: 28px;
@@ -26,7 +26,7 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
   }
 
   .container {
-    max-width: 800px; /* se vuoi lascia 600px */
+    max-width: 800px;
     margin: 40px auto;
     background: white;
     padding: 30px;
@@ -40,8 +40,8 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
     margin-top: 20px;
   }
 
-  /* Stile base per controlli */
-  select, textarea {
+  /* SELECT (3 righe visibili) */
+  #menu {
     width: 100%;
     padding: 10px;
     margin-top: 6px;
@@ -49,22 +49,24 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
     border: 1px solid #9ca3af;
     font-size: 16px;
     box-sizing: border-box;
-  }
-
-  /* Primo campo: SELECT a 3 righe con scroll */
-  #menu {
-    /* 'size' nel markup gestisce l'altezza a righe; qui solo rifiniture */
     overflow-y: auto;
   }
 
-  /* Altri 3 campi: TEXTAREA grandi con scroll & a capo */
-  #campoB, #campoC, #campoD {
-    height: 220px;       /* <-- regola l'altezza che preferisci */
-    resize: vertical;    /* l’utente può ingrandire */
+  /* TEXTAREA GRANDI */
+  textarea {
+    width: 100%;
+    height: 220px; /* regola a piacere */
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: 1px solid #9ca3af;
+    font-size: 16px;
+    resize: vertical;
     overflow-y: auto;
-    white-space: pre-wrap; /* mantiene \n e va a capo */
+    white-space: pre-wrap;
     background: #f9fafb;
-    line-height: 1.35;
+    line-height: 1.3;
+    box-sizing: border-box;
   }
 </style>
 </head>
@@ -75,7 +77,6 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
 
 <div class="container">
   <label id="labelA">Caricamento...</label>
-  <!-- 👇 Mostra 3 righe visibili (lista), con scroll se molte voci -->
   <select id="menu" size="3"></select>
 
   <label id="labelB"></label>
@@ -90,44 +91,48 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
 
 <script>
 async function caricaExcel() {
-  const file = await fetch("errori.xlsx");
-  const arrayBuffer = await file.arrayBuffer();
-  const workbook = XLSX.read(arrayBuffer, { type: "array" });
+  try {
+    const file = await fetch("errori.xlsx");
+    const arrayBuffer = await file.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: "array" });
 
-  const sheet = workbook.Sheets["errori"];
-  const dati = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+    const sheet = workbook.Sheets["errori"];
+    const dati = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-  const intestazioni = dati[0];
-  const righe = dati.slice(1);
+    const intestazioni = dati[0];
+    const righe = dati.slice(1);
 
-  document.getElementById("labelA").textContent = intestazioni[0];
-  document.getElementById("labelB").textContent = intestazioni[1];
-  document.getElementById("labelC").textContent = intestazioni[2];
-  document.getElementById("labelD").textContent = intestazioni[3];
+    document.getElementById("labelA").textContent = intestazioni[0];
+    document.getElementById("labelB").textContent = intestazioni[1];
+    document.getElementById("labelC").textContent = intestazioni[2];
+    document.getElementById("labelD").textContent = intestazioni[3];
 
-  const menu = document.getElementById("menu");
-  menu.innerHTML = "";
+    const menu = document.getElementById("menu");
+    menu.innerHTML = "";
 
-  righe.forEach((riga, index) => {
-    if (!riga || riga[0] === undefined || riga[0] === null || String(riga[0]).trim() === "") return;
-    const opt = document.createElement("option");
-    opt.value = index;
-    opt.textContent = riga[0];  // le <option> non vanno a capo: è un limite HTML
-    opt.title = riga[0];        // tooltip per leggere il testo completo al passaggio mouse
-    menu.appendChild(opt);
-  });
+    righe.forEach((riga, index) => {
+      if (!riga || !riga[0]) return;
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = riga[0];
+      opt.title = riga[0];
+      menu.appendChild(opt);
+    });
 
-  menu.addEventListener("change", () => {
-    const r = righe[menu.value];
-    document.getElementById("campoB").value = r[1] || "";
-    document.getElementById("campoC").value = r[2] || "";
-    document.getElementById("campoD").value = r[3] || "";
-  });
+    menu.addEventListener("change", () => {
+      const r = righe[menu.value] || [];
+      document.getElementById("campoB").value = r[1] || "";
+      document.getElementById("campoC").value = r[2] || "";
+      document.getElementById("campoD").value = r[3] || "";
+    });
 
-  // Se ci sono voci, seleziona la prima e popola i campi
-  if (menu.options.length > 0) {
-    menu.selectedIndex = 0;
-    menu.dispatchEvent(new Event("change"));
+    if (menu.options.length > 0) {
+      menu.selectedIndex = 0;
+      menu.dispatchEvent(new Event("change"));
+    }
+  } catch (e) {
+    alert("Errore nel caricamento del file Excel");
+    console.error(e);
   }
 }
 
