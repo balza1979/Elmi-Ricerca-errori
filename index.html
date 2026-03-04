@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Libreria per leggere file Excel -->
-https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
   body {
@@ -26,7 +26,7 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
   }
 
   .container {
-    max-width: 600px;          /* puoi aumentare es. 780px se vuoi più larghezza */
+    max-width: 600px;
     margin: 40px auto;
     background: white;
     padding: 30px;
@@ -40,30 +40,13 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
     margin-top: 20px;
   }
 
-  select {
+  select, input {
     width: 100%;
     padding: 10px;
     margin-top: 6px;
     border-radius: 6px;
     border: 1px solid #9ca3af;
     font-size: 16px;
-    box-sizing: border-box;
-  }
-
-  /* Campi di testo lunghi con scrollbar (SOLO UI, nessuna logica cambiata) */
-  textarea {
-    width: 100%;
-    height: 180px;        /* regola come preferisci (es. 220px) */
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: 1px solid #9ca3af;
-    font-size: 16px;
-    resize: vertical;     /* l’utente può ingrandire manualmente */
-    overflow-y: auto;     /* mostra la barra di scorrimento se serve */
-    white-space: pre-wrap;/* mantiene gli a capo e va a capo automaticamente */
-    background: #f9fafb;
-    box-sizing: border-box;
   }
 </style>
 </head>
@@ -77,13 +60,13 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
   <select id="menu"></select>
 
   <label id="labelB"></label>
-  <textarea id="campoB" readonly></textarea>
+  <input type="text" id="campoB" readonly>
 
   <label id="labelC"></label>
-  <textarea id="campoC" readonly></textarea>
+  <input type="text" id="campoC" readonly>
 
   <label id="labelD"></label>
-  <textarea id="campoD" readonly></textarea>
+  <input type="text" id="campoD" readonly>
 </div>
 
 <script>
@@ -98,35 +81,28 @@ async function caricaExcel() {
   const intestazioni = dati[0];
   const righe = dati.slice(1);
 
-  // Etichette (prendono la prima riga così com'è)
   document.getElementById("labelA").textContent = intestazioni[0];
   document.getElementById("labelB").textContent = intestazioni[1];
   document.getElementById("labelC").textContent = intestazioni[2];
   document.getElementById("labelD").textContent = intestazioni[3];
 
-  // Popola la tendina con la prima colonna delle righe successive
   const menu = document.getElementById("menu");
+
   righe.forEach((riga, index) => {
-    if (!riga || riga[0] === undefined || riga[0] === null || String(riga[0]).trim() === "") return;
     const opt = document.createElement("option");
     opt.value = index;
     opt.textContent = riga[0];
     menu.appendChild(opt);
   });
 
-  // Aggiorna i tre campi all’uso
   menu.addEventListener("change", () => {
-    const r = righe[menu.value] || [];
+    const r = righe[menu.value];
     document.getElementById("campoB").value = r[1] || "";
     document.getElementById("campoC").value = r[2] || "";
     document.getElementById("campoD").value = r[3] || "";
   });
 
-  // Trigger iniziale (se ci sono righe)
-  if (menu.options.length > 0) {
-    menu.selectedIndex = 0;
-    menu.dispatchEvent(new Event("change"));
-  }
+  menu.dispatchEvent(new Event("change"));
 }
 
 caricaExcel();
