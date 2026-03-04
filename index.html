@@ -5,19 +5,19 @@
 <title>ELMI – Errori</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- Libreria per leggere file Excel (PRIMA MANCAVA!!!) -->
-https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
+<!-- Libreria per leggere file Excel -->
+https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
 
 <style>
   body {
     margin: 0;
     padding: 0;
-    background: #d1d5db; /* grigio */
+    background: #d1d5db;
     font-family: Arial, sans-serif;
   }
 
   header {
-    background: #b91c1c; /* rosso */
+    background: #b91c1c;
     color: white;
     padding: 20px;
     font-size: 28px;
@@ -40,28 +40,18 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
     margin-top: 20px;
   }
 
-  select {
+  /* INPUT INGANDITI — unica modifica */
+  select, input {
     width: 100%;
     padding: 10px;
     margin-top: 6px;
     border-radius: 6px;
     border: 1px solid #9ca3af;
     font-size: 16px;
-  }
 
-  /* CAMPI GRANDI CON SCROLL */
-  textarea {
-    width: 100%;
-    height: 180px;
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: 1px solid #9ca3af;
-    font-size: 16px;
-    resize: vertical;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    background: #f9fafb;
+    height: 140px;       /* campo grande */
+    overflow-y: auto;    /* scrollbar */
+    white-space: normal; /* testo va a capo */
   }
 </style>
 </head>
@@ -75,13 +65,13 @@ https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js</script>
   <select id="menu"></select>
 
   <label id="labelB"></label>
-  <textarea id="campoB" readonly></textarea>
+  <input type="text" id="campoB" readonly>
 
   <label id="labelC"></label>
-  <textarea id="campoC" readonly></textarea>
+  <input type="text" id="campoC" readonly>
 
   <label id="labelD"></label>
-  <textarea id="campoD" readonly></textarea>
+  <input type="text" id="campoD" readonly>
 </div>
 
 <script>
@@ -104,8 +94,6 @@ async function caricaExcel() {
   const menu = document.getElementById("menu");
 
   righe.forEach((riga, index) => {
-    // evita righe vuote
-    if (!riga || riga[0] === undefined || riga[0] === null || String(riga[0]).trim() === "") return;
     const opt = document.createElement("option");
     opt.value = index;
     opt.textContent = riga[0];
@@ -119,10 +107,7 @@ async function caricaExcel() {
     document.getElementById("campoD").value = r[3] || "";
   });
 
-  if (menu.options.length > 0) {
-    menu.selectedIndex = 0;
-    menu.dispatchEvent(new Event("change"));
-  }
+  menu.dispatchEvent(new Event("change"));
 }
 
 caricaExcel();
