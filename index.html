@@ -132,4 +132,15 @@ async function caricaExcel() {
   menu.addEventListener("change", () => {
     const r = righe[menu.value];
     document.getElementById("campoB").value = r[1] || "";
-    document
+    document.getElementById("campoC").value = r[2] || "";
+    document.getElementById("campoD").value = r[3] || "";
+  });
+
+  menu.dispatchEvent(new Event("change"));
+}
+
+caricaExcel();
+</script>
+
+</body>
+</html>
